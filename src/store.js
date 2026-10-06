@@ -1,2 +1,5 @@
-import fs from "node:fs";const FILE=process.env.DATA_FILE||"./data/jobs.json";function load(){try{return JSON.parse(fs.readFileSync(FILE,"utf8"))}catch{return {jobs:{},executions:[]}}}function save(s){fs.mkdirSync(new URL("../data/",import.meta.url),{recursive:true});fs.writeFileSync(FILE,JSON.stringify(s,null,2));}
-export const store={list(){return Object.values(load().jobs)},get(id){return load().jobs[id]},put(j){const s=load();s.jobs[j.id]=j;save(s);return j},del(id){const s=load();delete s.jobs[id];save(s)},log(x){const s=load();s.executions.unshift(x);s.executions=s.executions.slice(0,500);save(s)},logs(){return load().executions}};
+import fs from "node:fs";import path from "node:path";
+const FILE=path.resolve(process.env.DATA_FILE||"./data/jobs.json");
+function load(){try{return JSON.parse(fs.readFileSync(FILE,"utf8"))}catch{return {jobs:{},executions:[]}}}
+function save(s){fs.mkdirSync(path.dirname(FILE),{recursive:true});fs.writeFileSync(FILE,JSON.stringify(s,null,2));}
+export const store={list(){return Object.values(load().jobs)},get(id){return load().jobs[id]},put(j){const s=load();s.jobs[j.id]=j;save(s);return j},del(id){const s=load();const found=s.jobs[id];delete s.jobs[id];save(s);return found},log(x){const s=load();s.executions.unshift(x);s.executions=s.executions.slice(0,500);save(s);return x},logs(jobId){const xs=load().executions;return jobId?xs.filter(x=>x.jobId===jobId):xs},execution(id){return load().executions.find(x=>x.id===id)}};
