@@ -1,30 +1,26 @@
 # Automation Runner
-Persistent HTTP automation runner for scheduled and webhook-triggered jobs.
+Persistent HTTP automation runner with an MCP control endpoint.
 
-## API
-- GET /health
-- GET /jobs
-- POST /jobs
+## Endpoints
+- GET /health — public hosting health check
+- POST /mcp — MCP JSON-RPC endpoint
+- GET/POST /jobs
 - GET/PATCH/DELETE /jobs/:id
-- POST /jobs/:id/run
-- POST /jobs/:id/enable
-- POST /jobs/:id/disable
+- POST /jobs/:id/run|enable|disable
 - POST /webhooks/:jobId
 - GET /logs?jobId=...
 - POST /executions/:executionId/retry
 
-Jobs support `runtime: "http"`, cron schedules, timeouts, exponential retries and overlap protection.
+When `RUNNER_TOKEN` is configured, every endpoint except `/health` requires `Authorization: Bearer <token>`. Do not expose a deployment without setting this secret.
+
+## MCP
+Supports `initialize`, `notifications/initialized`, `tools/list`, and `tools/call`. Tools: create/update/run/list/get/enable/disable/delete jobs, execution logs/retry, and health check.
 
 ## Run
 ```bash
 npm install
 npm test
-npm start
+RUNNER_TOKEN=change-me npm start
 ```
 
-## Example
-```json
-{"name":"Report","runtime":"http","url":"https://example.invalid/webhook","cron":"0 */5 * * *","maxRetries":3,"retryBackoffSeconds":5}
-```
-
-Deploy with the included Dockerfile / Render Blueprint. Keep credentials and webhook secrets in deployment environment variables; never commit them.
+Jobs currently support HTTP execution, cron schedules, timeouts, exponential retries and overlap protection. Deploy with Docker/Render. Never commit credentials, webhook secrets or RUNNER_TOKEN.
