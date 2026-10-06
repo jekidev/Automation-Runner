@@ -1,14 +1,19 @@
 # Automation Runner
-Small persistent HTTP automation runner.
+Persistent HTTP automation runner for scheduled and webhook-triggered jobs.
 
 ## API
 - GET /health
 - GET /jobs
 - POST /jobs
+- GET/PATCH/DELETE /jobs/:id
 - POST /jobs/:id/run
-- GET /logs
+- POST /jobs/:id/enable
+- POST /jobs/:id/disable
+- POST /webhooks/:jobId
+- GET /logs?jobId=...
+- POST /executions/:executionId/retry
 
-Jobs currently support `runtime: "http"`, cron schedules, timeouts, exponential retries and overlap protection.
+Jobs support `runtime: "http"`, cron schedules, timeouts, exponential retries and overlap protection.
 
 ## Run
 ```bash
@@ -17,9 +22,9 @@ npm test
 npm start
 ```
 
-## Example job
+## Example
 ```json
-{"name":"Discord report","runtime":"http","url":"https://example.invalid/webhook","cron":"0 */5 * * *","maxRetries":3,"retryBackoffSeconds":5}
+{"name":"Report","runtime":"http","url":"https://example.invalid/webhook","cron":"0 */5 * * *","maxRetries":3,"retryBackoffSeconds":5}
 ```
 
-Secrets should be supplied by deployment environment; never commit webhook tokens or credentials.
+Deploy with the included Dockerfile / Render Blueprint. Keep credentials and webhook secrets in deployment environment variables; never commit them.
