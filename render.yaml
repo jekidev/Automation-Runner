@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: automation-runner
+    runtime: docker
+    healthCheckPath: /health
+    envVars:
+      - key: DATA_FILE
+        value: /var/data/jobs.json
+    disk:
+      name: runner-data
+      mountPath: /var/data
+      sizeGB: 1
