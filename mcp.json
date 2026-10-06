@@ -1,0 +1,1 @@
+{"name":"automation-runner","version":"0.1.0","transport":{"type":"streamable-http","url":"${AUTOMATION_RUNNER_URL}/mcp"},"tools":["create_job","update_job","run_job","list_jobs","get_job","enable_job","disable_job","delete_job","execution_logs","retry_execution","health_check"]}
